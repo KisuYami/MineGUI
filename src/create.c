@@ -3,8 +3,8 @@
 #include <SDL/SDL.h>
 #include "minesdl.h"
 
-struct minesdl_root *minesdl_create_root(int v_size, int h_size, int mode,
-		int fullscreen, Uint16 background_color)
+struct minesdl_root *minesdl_create_root(int v_size, int h_size,
+		int mode, int fullscreen, int size)
 {
 	struct minesdl_root *root = NULL;
 	root = malloc(sizeof(struct minesdl_root));
@@ -17,11 +17,15 @@ struct minesdl_root *minesdl_create_root(int v_size, int h_size, int mode,
 	*root = (struct minesdl_root) {
 
 		.screen = NULL,
+
+		.fullscreen = fullscreen,
 		.v_size = v_size,
 		.h_size = h_size,
-
 		.mode = mode,
-		.fullscreen = fullscreen,
+
+		.number_widget = size,
+
+		.widget_list = NULL,
 
 		.widget = (struct minesdl_widget) {
 
@@ -53,8 +57,11 @@ struct minesdl_root *minesdl_create_root(int v_size, int h_size, int mode,
 
 		},
 
-		.widget_list = NULL,
 	};
+
+
+	if(size > 0)
+		root->widget_list = malloc(sizeof(struct minesdl_widget_list) * size);
 
 	if(SDL_Init(SDL_INIT_VIDEO) != 0) {
 		fprintf(stderr, "MineSDL: Failed to create root window\n");
@@ -102,7 +109,6 @@ struct minesdl_widget *minesdl_create_widget(
 	*widget = (struct minesdl_widget) {
 
 		.type = type,
-		.next_element = NULL,
 
 		.box = (struct minesdl_box) {
 
@@ -132,7 +138,7 @@ struct minesdl_widget *minesdl_create_widget(
 }
 
 struct minesdl_widget_list *minesdl_create_widget_list(int x1, int x2,
-		int y1, int y2, Uint16 color)
+		int y1, int y2, int size, Uint16 color)
 {
 	struct minesdl_widget_list *list;
 
@@ -150,10 +156,13 @@ struct minesdl_widget_list *minesdl_create_widget_list(int x1, int x2,
 		.widget = minesdl_create_widget(NULL, x1, x2, y1, y2, 0, 0,
 				DISPLAY, color, 0),
 
-		.widget_element = NULL,
-		.next_widget = NULL,
+		.widget_sub = NULL,
+		.number_widget = size,
 
 	};
+
+	if(size > 0)
+		list->widget_sub = malloc(sizeof(struct minesdl_widget) * size);
 
 	return list;
 }

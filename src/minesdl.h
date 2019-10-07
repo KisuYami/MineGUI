@@ -1,5 +1,6 @@
 #ifndef HEADER_MINESDL
 #define  HEADER_MINESDL
+
 #include <stddef.h>
 #include <SDL/SDL.h>
 
@@ -34,42 +35,43 @@ struct minesdl_box {
 
 };
 
+// TODO: Adde string, handle text and add borders
 struct minesdl_widget {
 
 	int type;
 	struct margin margin;
-
 	struct minesdl_box box;
-	struct minesdl_widget *next_element;
 
 };
 
 struct minesdl_widget_list {
 
-	struct minesdl_widget *widget;
-	struct minesdl_widget *widget_element;
+	int number_widget;
 
-	struct minesdl_widget_list *next_widget;
+	struct minesdl_widget *widget;
+	struct minesdl_widget **widget_sub;
 
 };
 
 struct minesdl_root {
 
-	int v_size, h_size;
-	int fullscreen;
-	int mode;
-
 	SDL_Surface *screen;
 
+	int fullscreen;
+	int v_size, h_size;
+	int mode;
+
+	int number_widget;
+
 	struct minesdl_widget widget;
-	struct minesdl_widget_list *widget_list;
+	struct minesdl_widget_list **widget_list;
 };
 
-struct minesdl_root *minesdl_create_root(int v_size, int h_size, int mode,
-		int fullscreen, Uint16 background_color);
+struct minesdl_root *minesdl_create_root(int v_size, int h_size,
+		int mode, int fullscreen, int size);
 
 struct minesdl_widget_list *minesdl_create_widget_list(int x1, int x2,
-		int y1, int y2, Uint16 color);
+		int y1, int y2, int size, Uint16 color);
 
 struct minesdl_widget *minesdl_create_widget(
 		struct minesdl_widget_list *widget_list,
@@ -83,4 +85,6 @@ Uint16 minesdl_create_color(SDL_PixelFormat *fmt, Uint8 red,
 int minesdl_draw_window(struct minesdl_root *root);
 int minesdl_draw_widget(struct minesdl_root *root,
 		struct minesdl_widget *widget);
+
+void minesdl_clean_root(struct minesdl_root *root);
 #endif

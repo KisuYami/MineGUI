@@ -31,7 +31,7 @@ int minesdl_draw_widget(struct minesdl_root *root,
 
 int minesdl_draw_window(struct minesdl_root *root)
 {
-	struct minesdl_widget_list *tmp_list = NULL;
+	int i, p;
 
 	minesdl_draw_widget(root, &root->widget);
 
@@ -40,13 +40,16 @@ int minesdl_draw_window(struct minesdl_root *root)
 		return 1;
 	}
 
-	tmp_list = root->widget_list;
+	for (i = 0; i < root->number_widget; ++i) {
 
-	while(tmp_list != NULL) {
+		if(root->widget_list[i]->widget != NULL)
+			minesdl_draw_widget(root, root->widget_list[i]->widget);
 
-		minesdl_draw_widget(root, tmp_list->widget);
-		minesdl_draw_widget(root, tmp_list->widget_element);
-		tmp_list = tmp_list->next_widget;
+		for (p = 0; p < root->widget_list[i]->number_widget; ++p) {
+			if(root->widget_list[i]->widget_sub[p] != NULL)
+				minesdl_draw_widget(root, root->widget_list[i]->widget_sub[p]);
+		}
+
 	}
 
 	return 0;

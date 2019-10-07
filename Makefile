@@ -1,4 +1,4 @@
-TARGET_LIB = libminesdl.so
+TARGET_LIB = libminegui.so
 
 CC 		= gcc
 CFLAGS 	= -Wall -Werror -pedantic -ggdb3 -fPIC
@@ -10,7 +10,7 @@ SRCS = $(shell find $(SRC_DIRS) -name *.cpp -or -name *.c -or -name *.s)
 HEADERS = $(shell find $(SRC_DIRS) -name *.h -or -name *.hh)
 OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
 
-INCLUDE_DIR=/usr/local/include/minesdl/
+INCLUDE_DIR=/usr/local/include/minegui/
 LIB_DIR=/usr/lib/
 
 # Program binary
