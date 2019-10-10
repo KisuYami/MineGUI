@@ -5,7 +5,7 @@
 #include <SDL/SDL.h>
 
 enum box_types {
-	DISPLAY			= 0,
+	DISPLAY		= 0,
 	TEXT_DISPLAY	= 1,
 	TEXT_INPUT		= 2,
 	BUTTON			= 4,
@@ -39,6 +39,9 @@ struct minesdl_box {
 struct minesdl_widget {
 
 	int type;
+
+	void (*action[3])();
+
 	struct margin margin;
 	struct minesdl_box box;
 
@@ -67,6 +70,7 @@ struct minesdl_root {
 	struct minesdl_widget_list **widget_list;
 };
 
+// Creation and management
 struct minesdl_root *minesdl_create_root(int v_size, int h_size,
 		int mode, int fullscreen, int size);
 
@@ -87,4 +91,9 @@ int minesdl_draw_widget(struct minesdl_root *root,
 		struct minesdl_widget *widget);
 
 void minesdl_clean_root(struct minesdl_root *root);
+
+// Interaction
+void minesdl_loop(struct minesdl_root *root);
+void minesdl_bind_action(struct minesdl_widget *widget, int mouse, void (*action)());
+
 #endif

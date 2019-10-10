@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <SDL/SDL.h>
-#include "minesdl.h"
+#include "minegui.h"
 
 void minesdl_clean_root(struct minesdl_root *root)
 {

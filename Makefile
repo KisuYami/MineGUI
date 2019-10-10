@@ -1,7 +1,8 @@
 TARGET_LIB = libminegui.so
 
 CC 		= gcc
-CFLAGS 	= -Wall -Werror -pedantic -ggdb3 -fPIC
+CFLAGS 	= -O3 -fPIC
+DEBUG_CFLAGS = -Wall -Werror -pedantic -ggdb3 -Wno-error=unknown-pragmas -fPIC
 
 SRC_DIRS 	= ./src
 BUILD_DIR 	= ./build
@@ -19,7 +20,12 @@ $(BUILD_DIR)/$(TARGET_LIB): $(OBJS)
 
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
+
+ifdef DEBUG
+	$(CC) $(DEBUG_CFLAGS) -c $< -o $@
+else
 	$(CC) $(CFLAGS) -c $< -o $@
+endif
 
 install: $(BUILD_DIR)/$(TARGET_LIB)
 	mkdir -p $(INCLUDE_DIR)
