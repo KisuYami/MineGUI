@@ -19,13 +19,17 @@ struct minesdl_root *minesdl_create_root(int v_size, int h_size,
 		.screen = NULL,
 
 		.fullscreen = fullscreen,
-		.v_size = v_size,
-		.h_size = h_size,
 		.mode = mode,
 
 		.number_widget = size,
-
 		.widget_list = NULL,
+
+		.size = (struct SDL_Rect) {
+			.w = v_size,
+			.h = h_size,
+			.x = 0,
+			.y = 0,
+		},
 
 		.widget = (struct minesdl_widget) {
 
@@ -69,7 +73,7 @@ struct minesdl_root *minesdl_create_root(int v_size, int h_size,
 		exit(1);
 	}
 
-	root->screen = SDL_SetVideoMode(root->v_size, root->h_size,
+	root->screen = SDL_SetVideoMode(root->size.h, root->size.w,
 			root->mode, root->fullscreen);
 
 	if(!root->screen) {
@@ -182,4 +186,48 @@ Uint16 minesdl_create_color(SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 
 			((blue >> fmt->Bloss) << fmt->Bshift);
 
 	return value;
+}
+
+int minesdl_create_text( struct minesdl_widget *widget,
+		int x, int y, int v_size, int h_size, int font_size,
+		char *text, char *font_familly,
+		int red, int green, int blue)
+{
+	TTF_Init();
+	struct minesdl_text final_text;
+
+	final_text = (struct minesdl_text) {
+
+		.text = text,
+		.font_size = font_size,
+		.font_familly = NULL,
+		.font_surface = NULL,
+
+		.font_color = (struct SDL_Color) {
+			.r = red,
+			.g = green,
+			.b = blue,
+		},
+
+		.font_rect = (struct SDL_Rect) {
+			.x = y + widget->box.margin.left,
+			.y = x + widget->box.margin.top,
+			.w = h_size,
+			.h = v_size,
+		},
+
+	};
+
+	final_text.font_familly = TTF_OpenFont(font_familly, final_text.font_size);
+
+	if(final_text.font_familly == NULL)
+		fprintf(stderr, "MineGUI: %s\n", TTF_GetError());
+
+	final_text.font_surface = TTF_RenderText_Solid(final_text.font_familly,
+			text, final_text.font_color);
+
+	if(final_text.font_surface == NULL)
+		fprintf(stderr, "MineGUI: %s\n", TTF_GetError());
+
+	widget->text = final_text;
 }

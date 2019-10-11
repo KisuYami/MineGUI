@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include "minegui.h"
 
 int minesdl_draw_widget(struct minesdl_root *root,
@@ -30,6 +31,12 @@ int minesdl_draw_widget(struct minesdl_root *root,
 	return 0;
 }
 
+void minesdl_draw_text(struct minesdl_root *root, struct minesdl_widget *widget)
+{
+	SDL_BlitSurface(widget->text.font_surface, NULL, root->screen,
+			&widget->text.font_rect);
+}
+
 int minesdl_draw_window(struct minesdl_root *root)
 {
 	int i, p;
@@ -51,8 +58,12 @@ int minesdl_draw_window(struct minesdl_root *root)
 
 		for (p = 0; p < root->widget_list[i]->number_widget; ++p) {
 
-			if(root->widget_list[i]->widget_sub[p] != NULL)
+			if(root->widget_list[i]->widget_sub[p] != NULL) {
 				minesdl_draw_widget(root, root->widget_list[i]->widget_sub[p]);
+				if(root->widget_list[i]->widget_sub[p]->type | TEXT_DISPLAY) {
+					minesdl_draw_text(root, root->widget_list[i]->widget_sub[p]);
+				}
+			}
 
 			else
 				fprintf(stderr, "MineSDL: sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);

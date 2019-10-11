@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include "minegui.h"
 
 static void minesdl_check_button_click(struct minesdl_root *root,
@@ -33,6 +34,12 @@ static void minesdl_check_button_click(struct minesdl_root *root,
 void minesdl_loop(struct minesdl_root *root)
 {
 	SDL_Event event;
+
+	if(TTF_Init()==-1) {
+		printf("TTF_Init: %s\n", TTF_GetError());
+		exit(2);
+	}
+
 	minesdl_draw_window(root);
 
 	while(SDL_WaitEvent(&event) != 0) {
@@ -43,8 +50,8 @@ void minesdl_loop(struct minesdl_root *root)
 
 			case SDL_QUIT:
 				minesdl_clean_root(root);
+				TTF_Quit();
 				exit(0);
-
 				break;
 		}
 	}
