@@ -1,0 +1,103 @@
+#+title: MineGUI Documentation
+#+author: Reberti Carvalho Soares
+#+date: 2019:10:13
+#+OPTIONS: ^:nil, toc:2
+#+latex_class: article
+
+* Intro
+  One day a lazy dev looked in to the magical world of the GUI apps
+and in the APIs that made this world work, he found himself lost, as 
+no API had good docs. Then himself started to wrote the magic scrolls himself,
+hopping that he never will need to learn another GUI.
+
+** Install
+ + Dependencies
+    1. SDL 1.2
+    2. SDL-ttf
+    3. gnu-make
+
+#+BEGIN_SRC bash
+make # you can use DEBUG=1
+make install
+#+END_SRC
+
+** Compiling Your Programs
+How to compile a single file:
+#+BEGIN_SRC bash
+gcc -lSDL -lSDL_ttf -lminegui example.c -o example
+#+END_SRC
+
+* Usage
+
+** Concepts
+How i think my API work.
+
+*** Root Window
+The root window is where all widgets are drawed, and it's struct shall
+contain all the info about it's widgets.
+
+#+BEGIN_SRC c
+struct minesdl_root *root;
+root = minesdl_create_root(256, 256, 16, 0, 0);
+...
+minesdl_free_root(root);
+#+END_SRC
+
+**** Definitions:
+***** Window Struct
+#+BEGIN_SRC c
+struct minesdl_root
+{
+    int volatile redraw_flag;
+
+    int fullscreen;
+    int mode;
+
+    SDL_Surface *screen;
+    SDL_Rect	 size;
+
+    int number_widget;
+
+    struct minesdl_widget widget;
+    struct minesdl_widget_list **widget_list;
+};
+#+END_SRC
+
+***** Initialization
+
+#+BEGIN_SRC c
+struct minesdl_root *
+minesdl_create_root(int v_size, int h_size, 
+int mode, int fullscreen, int size);
+#+END_SRC
+
+- Arguments:
+  + v_size & h_size: the size of the window
+  + mode: the mode of video card to be used
+  + fullscreen: define if the window is fullscreen
+  + size: how many widgets_list are needed
+
+***** Memory
+
+This function shall free the allocated memory, surfaces and fonts of
+every widget created inside of root.
+#+BEGIN_SRC c
+void
+minesdl_clean_root(struct minesdl_root *root);
+#+END_SRC
+
+*** Widget List
+	(WIP)
+*** Widget
+	(WIP)
+
+** Drawing Window
+   (WIP)
+**** Definitions
+***** Drawing
+
+	  This function shall draw all the widgets inside of root.
+#+BEGIN_SRC c
+int
+minesdl_draw_window(struct minesdl_root *root);
+#+END_SRC
