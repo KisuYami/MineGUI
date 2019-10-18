@@ -8,10 +8,10 @@
 enum box_types
 {
 
-    DISPLAY		= 0,
+    DISPLAY		    = 0,
     TEXT_DISPLAY	= 1,
-    TEXT_INPUT	        = 2,
-    BUTTON		= 4,
+    TEXT_INPUT	    = 2,
+    BUTTON		    = 4,
 
 };
 
@@ -48,7 +48,7 @@ struct minesdl_text
     char	*text;
     size_t	 font_size;
 
-    int		 font_style;
+    int		     font_style;
     TTF_Font	*font_familly;
     SDL_Rect	 font_rect;
     SDL_Color	 font_color;
@@ -61,6 +61,7 @@ struct minesdl_widget
 {
 
     int type;
+	int clicked;
 
     void (*action[3])();
 
@@ -74,6 +75,7 @@ struct minesdl_widget_list
 {
 
     int number_widget;
+    int used_widget;
 
     struct minesdl_widget *widget;
     struct minesdl_widget **widget_sub;

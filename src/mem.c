@@ -22,6 +22,7 @@ minesdl_clean_root(struct minesdl_root *root)
         }
 
         free(root->widget_list[i]->widget);
+        free(root->widget_list[i]->widget_sub);
         free(root->widget_list[i]);
 
     }

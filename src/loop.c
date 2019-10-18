@@ -23,12 +23,17 @@ minesdl_check_button_click(struct minesdl_root *root,
                 struct minesdl_box *position = &root->widget_list[i]->widget_sub[p]->box;
 
                 if( (mouse->button.x >= position->size.y1 + position->margin.left) &&
-                        (mouse->button.x <= position->size.y2 + position->margin.left) &&
-                        (mouse->button.y >= position->size.x1 + position->margin.top) &&
-                        (mouse->button.y <= position->size.x2 + position->margin.top))
-
-                    if(root->widget_list[i]->widget_sub[p]->action[mouse->button.button - 1] != NULL)
-                        root->widget_list[i]->widget_sub[p]->action[mouse->button.button - 1](root);
+					(mouse->button.x <= position->size.y2 + position->margin.left) &&
+					(mouse->button.y >= position->size.x1 + position->margin.top) &&
+					(mouse->button.y <= position->size.x2 + position->margin.top)) {
+					
+                    if(root->widget_list[i]->widget_sub[p]->action[mouse->button.button - 1] != NULL) {
+						
+						root->widget_list[i]->widget_sub[p]->clicked = 1;
+						root->widget_list[i]->widget_sub[p]->action[mouse->button.button - 1](root);
+						root->widget_list[i]->widget_sub[p]->clicked = 0;
+					}
+				}
             }
         }
     }

@@ -6,8 +6,8 @@
 
 struct minesdl_root *
 minesdl_create_root(int v_size, int h_size,
-		    int mode, int fullscreen,
-		    int size)
+					int mode, int fullscreen,
+					int size)
 {
     struct minesdl_root *root = NULL;
     root = malloc(sizeof(struct minesdl_root));
@@ -99,10 +99,10 @@ minesdl_create_root(int v_size, int h_size,
 
 struct minesdl_widget *
 minesdl_create_widget(struct minesdl_widget_list *widget_list,
-		      int x1, int x2, int y1, int y2,
-		      int margin_top, int margin_left,
-		      int type, Uint16 color,
-		      Uint16 color_pressed)
+					  int x1, int x2, int y1, int y2,
+					  int margin_top, int margin_left,
+					  int type, Uint16 color,
+					  Uint16 color_pressed)
 {
     struct minesdl_widget *widget;
     int final_margin_left, final_margin_top;
@@ -110,15 +110,15 @@ minesdl_create_widget(struct minesdl_widget_list *widget_list,
     if(widget_list != NULL)
     {
 
-        widget_list->widget_sub[0] = malloc(sizeof(struct minesdl_widget));
-        widget = widget_list->widget_sub[0];
+		widget_list->widget_sub[widget_list->used_widget] = malloc(sizeof(struct minesdl_widget));
+		widget = widget_list->widget_sub[widget_list->used_widget];
 
-        final_margin_top = margin_top + widget_list->widget->box.size.y1;
-        final_margin_left = margin_left + widget_list->widget->box.size.x1;
+        final_margin_top = margin_top + widget_list->widget->box.size.x1;
+        final_margin_left = margin_left + widget_list->widget->box.size.y1;
 
-    }
-    else
-    {
+		widget_list->used_widget++;
+
+    } else {
 
         widget = malloc(sizeof(struct minesdl_widget));
 
@@ -170,8 +170,8 @@ minesdl_create_widget(struct minesdl_widget_list *widget_list,
 
 struct minesdl_widget_list *
 minesdl_create_widget_list(int x1, int x2,
-			   int y1, int y2,
-			   int size, Uint16 color)
+						   int y1, int y2,
+						   int size, Uint16 color)
 {
     struct minesdl_widget_list *list;
 
@@ -191,8 +191,9 @@ minesdl_create_widget_list(int x1, int x2,
         .widget = minesdl_create_widget(NULL, x1, x2, y1, y2, 0, 0,
                                         DISPLAY, color, 0),
 
-                  .widget_sub = NULL,
-                  .number_widget = size,
+		.widget_sub = NULL,
+		.number_widget = size,
+		.used_widget = 0,
 
     };
 

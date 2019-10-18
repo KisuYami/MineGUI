@@ -5,9 +5,14 @@
 #include "widget.h"
 #include "draw.h"
 
+/*********************************************************/
+/* When any of the functions below is mannually called,  */
+/*   YOU need to flip the scren(SDL_Flip(root->screen)); */
+/*********************************************************/
+
 int
 minesdl_draw_widget(struct minesdl_root *root,
-		    struct minesdl_widget *widget)
+					struct minesdl_widget *widget)
 {
     int x, y;
     int offset;
@@ -45,8 +50,8 @@ minesdl_draw_text(struct minesdl_root *root, struct minesdl_widget *widget)
 int
 minesdl_draw_window(struct minesdl_root *root)
 {
-    int i, p;
 
+    int i, p;
     minesdl_draw_widget(root, &root->widget);
 
     if(root->widget_list == NULL)
@@ -70,9 +75,14 @@ minesdl_draw_window(struct minesdl_root *root)
             if(root->widget_list[i]->widget_sub[p] != NULL)
             {
                 minesdl_draw_widget(root, root->widget_list[i]->widget_sub[p]);
+
                 if(root->widget_list[i]->widget_sub[p]->type | TEXT_DISPLAY)
                 {
-                    minesdl_draw_text(root, root->widget_list[i]->widget_sub[p]);
+					if(root->widget_list[i]->widget_sub[p]->text.text != NULL)
+						minesdl_draw_text(root, root->widget_list[i]->widget_sub[p]);
+
+					else
+						fprintf(stderr, "MineSDL: text from sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
                 }
             }
 
