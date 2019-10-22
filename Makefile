@@ -28,11 +28,11 @@ else
 endif
 
 install: $(BUILD_DIR)/$(TARGET_LIB)
-	mkdir -p $(INCLUDE_DIR)
-	install -g 0 -o 0 -m 0755 build/$(TARGET_LIB) $(LIB_DIR)
-	find $(SRC_DIRS)/*.h -type f -exec install -Dm 755 "{}" "$(INCLUDE_DIR)" \;
 
-	ldconfig /usr/lib
+	mkdir -p $(DEST_DIR)$(INCLUDE_DIR)
+
+	install -g 0 -o 0 -m 0755 build/$(TARGET_LIB) $(DEST_DIR)$(LIB_DIR)
+	find $(SRC_DIRS)/*.h -type f -exec install -Dm 755 "{}" "$(DEST_DIR)$(INCLUDE_DIR)" \;
 
 clear:
 	$(RM) -rf $(BUILD_DIR)
