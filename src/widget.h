@@ -1,50 +1,44 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
-#include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL.h>
+
 #include <stddef.h>
 
 enum box_types
 {
-
-    DISPLAY		    = 0,
-    TEXT_DISPLAY	= 1,
-    TEXT_INPUT	    = 2,
-    BUTTON		    = 4,
-
+    MINEGUI_DISPLAY		    = 0,
+    MINEGUI_TEXT_DISPLAY	= 1,
+    MINEGUI_TEXT_INPUT	    = 2,
+    MINEGUI_BUTTON		    = 4,
+	MINEGUI_BORDER          = 8,
+	MINEGUI_RADIUS          = 16,
 };
 
 struct size
 {
-
     int x1, x2;
     int y1, y2;
-
 };
 
 struct margin
 {
-
     int top;
     int left;
-
 };
 
-struct minesdl_box
+struct minegui_box
 {
-
     Uint16 color;
-    Uint16 color_pressed; // When it is a button;
+    Uint16 color_border; // When it is a button;
 
     struct size size;
     struct margin margin;
-
 };
 
-struct minesdl_text
+struct minegui_text
 {
-
     char	*text;
     size_t	 font_size;
 
@@ -56,33 +50,29 @@ struct minesdl_text
     SDL_Surface *font_surface;
 };
 
-// TODO: and add borders
-struct minesdl_widget
+// TODO: add borders
+struct minegui_widget
 {
-
     int type;
 	int clicked;
 
     void (*action[3])();
 
     struct margin		margin;
-    struct minesdl_box	box;
-    struct minesdl_text	text;
-
+    struct minegui_box	box;
+    struct minegui_text	text;
 };
 
-struct minesdl_widget_list
+struct minegui_widget_list
 {
-
     int number_widget;
     int used_widget;
 
-    struct minesdl_widget *widget;
-    struct minesdl_widget **widget_sub;
-
+    struct minegui_widget *widget;
+    struct minegui_widget **widget_sub;
 };
 
-struct minesdl_root
+struct minegui_root
 {
     int volatile redraw_flag;
 
@@ -94,7 +84,12 @@ struct minesdl_root
 
     int number_widget;
 
-    struct minesdl_widget widget;
-    struct minesdl_widget_list **widget_list;
+    struct minegui_widget widget;
+    struct minegui_widget_list **widget_list;
 };
+
+// Some typedefs for who will use the API
+typedef struct minegui_root MineGUI_root;
+typedef struct minegui_widget MineGUI_widget;
+
 #endif /* WIDGET_H */

@@ -4,6 +4,6 @@
 #include "widget.h"
 
 void
-minesdl_loop(struct minesdl_root *root);
+minegui_loop(struct minegui_root *root);
 
 #endif /* LOOP_H */

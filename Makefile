@@ -34,5 +34,5 @@ install: $(BUILD_DIR)/$(TARGET_LIB)
 	cp build/$(TARGET_LIB) $(DEST_DIR)/$(LIB_DIR)
 	find $(SRC_DIRS)/*.h -type f -exec install -Dm 755 "{}" "$(DEST_DIR)/$(INCLUDE_DIR)" \;
 
-clear:
+clean:
 	$(RM) -rf $(BUILD_DIR)

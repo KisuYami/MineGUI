@@ -12,32 +12,25 @@
 #include <stddef.h>
 #include "widget.h"
 
-struct minesdl_widget_list *
-minesdl_create_widget_list(int x1, int x2,
-			   int y1, int y2,
-			   int size, Uint16 color);
+struct minegui_widget_list *
+minegui_create_widget_list(int, int, int, int, int, Uint16);
 
-struct minesdl_widget *
-minesdl_create_widget(struct minesdl_widget_list *widget_list,
-		      int x1, int x2, int y1, int y2,
-		      int margin_top, int margin_left,
-		      int type, Uint16 color, Uint16 color_pressed);
+struct minegui_widget *
+minegui_create_widget(struct minegui_widget_list *,
+					  int, int, int, int, int, int,
+					  int, Uint16, Uint16);
 
-struct minesdl_root *
-minesdl_create_root(int v_size, int h_size,
-		    int mode, int fullscreen,
-		    int size);
+struct minegui_root *
+minegui_create_root(int, int, int, int, int);
 
 Uint16
-minesdl_create_color(SDL_PixelFormat *fmt, Uint8 red,
-		     Uint8 green, Uint8 blue);
+minegui_create_color(SDL_PixelFormat *, Uint8, Uint8, Uint8);
 
 void
-minesdl_create_text(struct minesdl_widget *widget,
-		    int x, int y, int v_size, int h_size, int font_size,
-		    int style, char *text, char *font_familly,
-		    int red, int green, int blue);
+minegui_create_text(struct minegui_widget *,
+					int, int, int, int, int, int,
+					char *, char *, int, int, int);
 
 void
-minesdl_change_text(struct minesdl_widget *widget, char *new_text);
+minegui_change_text(struct minegui_widget *, char *);
 #endif /* CREATE_H */

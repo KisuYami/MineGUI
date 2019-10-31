@@ -4,6 +4,6 @@
 #include "widget.h"
 
 void
-minesdl_clean_root(struct minesdl_root *root);
+minegui_clean_root(struct minegui_root *root);
 
 #endif /* MEM_H */

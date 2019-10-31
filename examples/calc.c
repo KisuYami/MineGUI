@@ -7,23 +7,23 @@
 int STRING_INDEX; // XXX
 char DISPLAY_STRING[20];
 
-const char number_list[] = {'9', '8', '7', '6', '5', '4', '3', '2', '1', '.', '0', ','};
+const char number_list[] = {'7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', ','};
 const char symbol_list[] = {'-', '+', '/', '*', '%', 'B', 'C', '='};
 
 void
-display_handler(struct minesdl_root *root);
+display_handler(struct minegui_root *root);
 
 void
-display_symbol(struct minesdl_root *root);
+display_symbol(struct minegui_root *root);
 
 void
-display_clean(struct minesdl_root *root);
+display_clean(struct minegui_root *root);
 
 void
-display_eval(struct minesdl_root *root);
+display_eval(struct minegui_root *root);
 
 void
-display_handler(struct minesdl_root *root)
+display_handler(struct minegui_root *root)
 {
 
 	int i;
@@ -39,10 +39,10 @@ display_handler(struct minesdl_root *root)
 	else 
 		return;
 
-	minesdl_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
+	minegui_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
 
-	minesdl_draw_widget(root, root->widget_list[0]->widget);
-	minesdl_draw_text(root, root->widget_list[0]->widget_sub[0]);
+	minegui_draw_widget(root, root->widget_list[0]->widget);
+	minegui_draw_text(root, root->widget_list[0]->widget_sub[0]);
 
 	SDL_Flip(root->screen);
 
@@ -50,7 +50,7 @@ display_handler(struct minesdl_root *root)
 }
 
 void
-display_symbol(struct minesdl_root *root)
+display_symbol(struct minegui_root *root)
 {
 	int i;
 	for(i = 0; i < 7; ++i) {
@@ -59,7 +59,7 @@ display_symbol(struct minesdl_root *root)
 			break;
 	}
 
-	if(i == 5) {
+	if(5 == i) {
 		DISPLAY_STRING[--STRING_INDEX] = '\0';
 		if(STRING_INDEX < 0)
 			STRING_INDEX = 0;
@@ -73,17 +73,17 @@ display_symbol(struct minesdl_root *root)
 			return;
 	}
 
-	minesdl_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
+	minegui_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
 
-	minesdl_draw_widget(root, root->widget_list[0]->widget);
-	minesdl_draw_text(root, root->widget_list[0]->widget_sub[0]);
+	minegui_draw_widget(root, root->widget_list[0]->widget);
+	minegui_draw_text(root, root->widget_list[0]->widget_sub[0]);
 
 	SDL_Flip(root->screen);
 	return;
 }
 
 void
-display_eval(struct minesdl_root *root)
+display_eval(struct minegui_root *root)
 {
 	char command[36];
 	FILE *fp;
@@ -98,10 +98,10 @@ display_eval(struct minesdl_root *root)
 	fscanf(fp, "%s", DISPLAY_STRING);
 
 	STRING_INDEX = strlen(DISPLAY_STRING);
-	minesdl_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
+	minegui_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
 
-	minesdl_draw_widget(root, root->widget_list[0]->widget);
-	minesdl_draw_text(root, root->widget_list[0]->widget_sub[0]);
+	minegui_draw_widget(root, root->widget_list[0]->widget);
+	minegui_draw_text(root, root->widget_list[0]->widget_sub[0]);
 
 	SDL_Flip(root->screen);
 	pclose(fp);
@@ -109,16 +109,16 @@ display_eval(struct minesdl_root *root)
 }
 
 void
-display_clean(struct minesdl_root *root)
+display_clean(struct minegui_root *root)
 {
 	
 	STRING_INDEX = 0;
 	memset(DISPLAY_STRING, 0, 19);
 
-	minesdl_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
+	minegui_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
 
-	minesdl_draw_widget(root, root->widget_list[0]->widget);
-	minesdl_draw_text(root, root->widget_list[0]->widget_sub[0]);
+	minegui_draw_widget(root, root->widget_list[0]->widget);
+	minegui_draw_text(root, root->widget_list[0]->widget_sub[0]);
 
 	SDL_Flip(root->screen);
 	return;
@@ -127,28 +127,29 @@ display_clean(struct minesdl_root *root)
 int
 main(void)
 {
-	struct minesdl_root *root;
+	struct minegui_root *root;
 	char number;
 
-	Uint16 background, foreground, button;
+	Uint16 background, foreground, button, button_border;
 
-	root = minesdl_create_root(256, 256, 16, 0, 3);
+	root = minegui_create_root(256, 256, 16, 0, 3);
 
-	background	= minesdl_create_color(root->screen->format, 30, 30, 30);
-	foreground	= minesdl_create_color(root->screen->format, 50, 50, 50);
-	button		= minesdl_create_color(root->screen->format, 20, 20, 20);
+	background	  = minegui_create_color(root->screen->format, 30, 30, 30);
+	foreground	  = minegui_create_color(root->screen->format, 50, 50, 50);
+	button		  = minegui_create_color(root->screen->format, 20, 20, 20);
+	button_border = minegui_create_color(root->screen->format, 10, 10, 10);
 
 	root->widget.box.color = background;
 
 	/* START: Number Display */
 
-	root->widget_list[0] = minesdl_create_widget_list(10, 70, 10, 246,
+	root->widget_list[0] = minegui_create_widget_list(10, 70, 10, 246,
 													  1, foreground);
 
-	minesdl_create_widget(root->widget_list[0], 0, 35, 0, 0, 13, 2,
-						  BUTTON | TEXT_DISPLAY, foreground, foreground);
+	minegui_create_widget(root->widget_list[0], 0, 35, 0, 0, 13, 2,
+						  MINEGUI_TEXT_DISPLAY, foreground, foreground);
 
-	minesdl_create_text(root->widget_list[0]->widget_sub[0],
+	minegui_create_text(root->widget_list[0]->widget_sub[0],
 						1, 2, 25, 45, 30, 0,
 						"0.00", "/usr/share/fonts/truetype/Hack-Regular.ttf",
 						255, 255, 255);
@@ -156,7 +157,7 @@ main(void)
 	/* END: Number Display */
 
 	/* START: Number Pad */
-	root->widget_list[1] = minesdl_create_widget_list(80, 246, 10, 135,
+	root->widget_list[1] = minegui_create_widget_list(80, 246, 10, 135,
 													  12, foreground);
 
 	int p = 5, w = 5;
@@ -165,15 +166,16 @@ main(void)
 
 		sprintf(&number, "%c", number_list[i]);
 
-		minesdl_create_widget(root->widget_list[1], 0, 35, 0, 35, p, w,
-							  BUTTON | TEXT_DISPLAY, button, button);
+		minegui_create_widget(root->widget_list[1], 0, 35, 0, 35, p, w,
+							  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
+							  button, button_border);
 
-		minesdl_create_text(root->widget_list[1]->widget_sub[i],
+		minegui_create_text(root->widget_list[1]->widget_sub[i],
 							1, 9, 25, 45, 30, 0,
 							&number, "/usr/share/fonts/truetype/Hack-Regular.ttf",
 							255, 255, 255);
 
-		minesdl_bind_action(root->widget_list[1]->widget_sub[i], 0, display_handler);
+		minegui_bind_action(root->widget_list[1]->widget_sub[i], 0, display_handler);
 		w += 40;
 
 		if(i == 2 || i == 5 || i == 8) {
@@ -186,7 +188,7 @@ main(void)
 	/* END: Number Pad */
 
 	/* START: Math Symbols */
-	root->widget_list[2] = minesdl_create_widget_list(80, 246, 145, 247,
+	root->widget_list[2] = minegui_create_widget_list(80, 246, 145, 247,
 													  8, foreground);
 
 	p = 5;
@@ -196,24 +198,25 @@ main(void)
 
 		sprintf(&number, "%c", symbol_list[i]);
 
-		if(i % 2) {
-			
-			minesdl_create_widget(root->widget_list[2], 0, 35, 0, 43, p, 54,
-								  BUTTON | TEXT_DISPLAY, button, button);
-
-		} else {
-			
-			minesdl_create_widget(root->widget_list[2], 0, 35, 0, 43, p, w,
-								  BUTTON | TEXT_DISPLAY, button, button);
-
+		if(i % 2)
+		{
+			minegui_create_widget(root->widget_list[2], 0, 35, 0, 43, p, 54,
+								  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
+								  button, button_border);
+		}
+		else
+		{
+			minegui_create_widget(root->widget_list[2], 0, 35, 0, 43, p, w,
+								  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_TEXT_DISPLAY,
+								  button, button_border);
 		}
 
-		minesdl_create_text(root->widget_list[2]->widget_sub[i],
+		minegui_create_text(root->widget_list[2]->widget_sub[i],
 							1, 12, 25, 45, 30, 0,
 							&number, "/usr/share/fonts/truetype/Hack-Regular.ttf",
 							255, 255, 255);
 		
-		minesdl_bind_action(root->widget_list[2]->widget_sub[i], 0, display_symbol);
+		minegui_bind_action(root->widget_list[2]->widget_sub[i], 0, display_symbol);
 
 		if(i == 1 || i == 3 || i == 5) {
 			p += 40;
@@ -222,14 +225,14 @@ main(void)
 
 	}
 
-	minesdl_bind_action(root->widget_list[2]->widget_sub[6], 0, display_clean);
-	minesdl_bind_action(root->widget_list[2]->widget_sub[7], 0, display_eval);
+	minegui_bind_action(root->widget_list[2]->widget_sub[6], 0, display_clean);
+	minegui_bind_action(root->widget_list[2]->widget_sub[7], 0, display_eval);
 	/* END: Math Symbols */
 
 	STRING_INDEX = 0;
 
-	minesdl_loop(root);
-	minesdl_clean_root(root);
+	minegui_loop(root);
+	minegui_clean_root(root);
 
 	return 0;
 }

@@ -1,16 +1,17 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <SDL/SDL.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 #include "widget.h"
 #include "create.h"
 
-struct minesdl_root *
-minesdl_create_root(int v_size, int h_size,
+struct minegui_root *
+minegui_create_root(int v_size, int h_size,
 					int mode, int fullscreen,
 					int size)
 {
-    struct minesdl_root *root = NULL;
-    root = malloc(sizeof(struct minesdl_root));
+    struct minegui_root *root = NULL;
+    root = malloc(sizeof(struct minegui_root));
 
     if(root == NULL)
     {
@@ -18,7 +19,7 @@ minesdl_create_root(int v_size, int h_size,
         exit(1);
     }
 
-    *root = (struct minesdl_root)
+    *root = (struct minegui_root)
     {
 
         .screen = NULL,
@@ -37,10 +38,10 @@ minesdl_create_root(int v_size, int h_size,
             .y = 0,
         },
 
-        .widget = (struct minesdl_widget)
+        .widget = (struct minegui_widget)
         {
 
-            .type = DISPLAY,
+            .type = MINEGUI_DISPLAY,
 
             .margin = (struct margin)
             {
@@ -48,7 +49,7 @@ minesdl_create_root(int v_size, int h_size,
                 .top = 0,
             },
 
-            .box = (struct minesdl_box)
+            .box = (struct minegui_box)
             {
 
                 .margin = (struct margin)
@@ -75,7 +76,7 @@ minesdl_create_root(int v_size, int h_size,
     };
 
     if(size > 0)
-        root->widget_list = malloc(sizeof(struct minesdl_widget_list) * size);
+        root->widget_list = malloc(sizeof(struct minegui_widget_list) * size);
 
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
@@ -97,20 +98,20 @@ minesdl_create_root(int v_size, int h_size,
     return root;
 }
 
-struct minesdl_widget *
-minesdl_create_widget(struct minesdl_widget_list *widget_list,
+struct minegui_widget *
+minegui_create_widget(struct minegui_widget_list *widget_list,
 					  int x1, int x2, int y1, int y2,
 					  int margin_top, int margin_left,
 					  int type, Uint16 color,
-					  Uint16 color_pressed)
+					  Uint16 color_border)
 {
-    struct minesdl_widget *widget;
+    struct minegui_widget *widget;
     int final_margin_left, final_margin_top;
 
     if(widget_list != NULL)
     {
 
-		widget_list->widget_sub[widget_list->used_widget] = malloc(sizeof(struct minesdl_widget));
+		widget_list->widget_sub[widget_list->used_widget] = malloc(sizeof(struct minegui_widget));
 		widget = widget_list->widget_sub[widget_list->used_widget];
 
         final_margin_top = margin_top + widget_list->widget->box.size.x1;
@@ -120,7 +121,7 @@ minesdl_create_widget(struct minesdl_widget_list *widget_list,
 
     } else {
 
-        widget = malloc(sizeof(struct minesdl_widget));
+        widget = malloc(sizeof(struct minegui_widget));
 
         final_margin_top = margin_top;
         final_margin_left = margin_left;
@@ -133,16 +134,16 @@ minesdl_create_widget(struct minesdl_widget_list *widget_list,
         exit(1);
     }
 
-    *widget = (struct minesdl_widget)
+    *widget = (struct minegui_widget)
     {
 
         .type = type,
 
-        .box = (struct minesdl_box)
+        .box = (struct minegui_box)
         {
 
             .color = color,
-            .color_pressed = color_pressed,
+            .color_border = color_border,
 
             .margin = (struct margin)
             {
@@ -168,14 +169,14 @@ minesdl_create_widget(struct minesdl_widget_list *widget_list,
     return widget;
 }
 
-struct minesdl_widget_list *
-minesdl_create_widget_list(int x1, int x2,
+struct minegui_widget_list *
+minegui_create_widget_list(int x1, int x2,
 						   int y1, int y2,
 						   int size, Uint16 color)
 {
-    struct minesdl_widget_list *list;
+    struct minegui_widget_list *list;
 
-    list = malloc(sizeof(struct minesdl_widget_list));
+    list = malloc(sizeof(struct minegui_widget_list));
 
     if(list == NULL)
     {
@@ -185,11 +186,11 @@ minesdl_create_widget_list(int x1, int x2,
 
     }
 
-    *list = (struct minesdl_widget_list)
+    *list = (struct minegui_widget_list)
     {
 
-        .widget = minesdl_create_widget(NULL, x1, x2, y1, y2, 0, 0,
-                                        DISPLAY, color, 0),
+        .widget = minegui_create_widget(NULL, x1, x2, y1, y2, 0, 0,
+                                        MINEGUI_DISPLAY, color, 0),
 
 		.widget_sub = NULL,
 		.number_widget = size,
@@ -198,13 +199,13 @@ minesdl_create_widget_list(int x1, int x2,
     };
 
     if(size > 0)
-        list->widget_sub = malloc(sizeof(struct minesdl_widget **) * size);
+        list->widget_sub = malloc(sizeof(struct minegui_widget **) * size);
 
     return list;
 }
 
 Uint16
-minesdl_create_color(SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blue)
+minegui_create_color(SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blue)
 {
     Uint16 value;
     value = ((red >> fmt->Rloss) << fmt->Rshift) +
@@ -215,16 +216,16 @@ minesdl_create_color(SDL_PixelFormat *fmt, Uint8 red, Uint8 green, Uint8 blue)
 }
 
 void
-minesdl_create_text(struct minesdl_widget *widget,
+minegui_create_text(struct minegui_widget *widget,
 		    int x, int y, int v_size, int h_size,
 		    int font_size, int style, char *text,
 		    char *font_familly, int red, int green, int blue)
 {
 
     TTF_Init();
-    struct minesdl_text final_text;
+    struct minegui_text final_text;
 
-    final_text = (struct minesdl_text)
+    final_text = (struct minegui_text)
     {
 
         .text = text,
@@ -270,7 +271,7 @@ minesdl_create_text(struct minesdl_widget *widget,
 }
 
 void
-minesdl_change_text(struct minesdl_widget *widget, char *new_text)
+minegui_change_text(struct minegui_widget *widget, char *new_text)
 {
 	TTF_Init();
 	SDL_FreeSurface(widget->text.font_surface);

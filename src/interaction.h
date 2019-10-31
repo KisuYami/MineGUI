@@ -3,7 +3,11 @@
 #include "widget.h"
 
 void
-minesdl_bind_action(struct minesdl_widget *widget, int mouse,
-		    void (*action)(struct minesdl_root *root));
+minegui_bind_action(struct minegui_widget *, int,
+					void (*)(struct minegui_root *));
+
+void
+minegui_check_button_click(struct minegui_root *,
+						   SDL_Event *);
 
 #endif /* INTERACTION_H */
