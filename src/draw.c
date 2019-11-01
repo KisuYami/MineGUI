@@ -46,8 +46,8 @@ minegui_draw_widget(struct minegui_root *root,
 				   (x > comp_x1 + BORDER_RADIUS || y < comp_y2 - BORDER_RADIUS) &&
 				   (x < comp_x2 - BORDER_RADIUS || y < comp_y2 - BORDER_RADIUS))
 				{
-#if 0
-					// TODO: Add teacup with borders
+
+#if 0 // TODO: Add teacup with borders
 					// Draw borders
 					if(widget->type & MINEGUI_BORDER)
 					{
@@ -61,7 +61,7 @@ minegui_draw_widget(struct minegui_root *root,
 					// Normal tea cup draw
 					else
 						raw_pixels[offset] = widget->box.color;
-#else
+#else // For now we use this
 					raw_pixels[offset] = widget->box.color;
 #endif
 
@@ -86,7 +86,6 @@ minegui_draw_widget(struct minegui_root *root,
     }
 
     SDL_UnlockSurface(root->screen);
-    SDL_Flip(root->screen);
 
     return 0;
 }
@@ -101,11 +100,17 @@ minegui_draw_text(struct minegui_root *root, struct minegui_widget *widget)
 int
 minegui_draw_window(struct minegui_root *root)
 {
+    int i, p; 
+	if(!root)
+	{
+        fprintf(stderr, "MineSDL: root window is uninitialized\n");
+		return 1;
+	}
+	else
+		minegui_draw_widget(root, &root->widget);
+		
 
-    int i, p;
-    minegui_draw_widget(root, &root->widget);
-
-    if(root->widget_list == NULL)
+    if(!root->widget_list)
     {
         fprintf(stderr, "MineSDL: Widget_list in root window is uninitialized\n");
 		return 1;
@@ -114,7 +119,7 @@ minegui_draw_window(struct minegui_root *root)
     for (i = 0; i < root->number_widget; ++i)
     {
 
-        if(root->widget_list[i]->widget != NULL)
+        if(root->widget_list[i]->widget)
             minegui_draw_widget(root, root->widget_list[i]->widget);
 
         else
@@ -123,25 +128,27 @@ minegui_draw_window(struct minegui_root *root)
         for (p = 0; p < root->widget_list[i]->number_widget; ++p)
         {
 
-            if(root->widget_list[i]->widget_sub[p] != NULL)
-            {
-                minegui_draw_widget(root, root->widget_list[i]->widget_sub[p]);
+			MineGUI_widget *widget = root->widget_list[i]->widget_sub[p];
 
-                if(root->widget_list[i]->widget_sub[p]->type | MINEGUI_TEXT_DISPLAY)
-                {
-					if(root->widget_list[i]->widget_sub[p]->text.text != NULL)
-						minegui_draw_text(root, root->widget_list[i]->widget_sub[p]);
-
-					else
-						fprintf(stderr, "MineSDL: text from sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
-                }
-            }
+			/* Widget itself */
+            if(widget)
+                minegui_draw_widget(root, widget);
 
             else
                 fprintf(stderr, "MineSDL: sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
+
+			/* Text on widget */
+			if(widget->text.font_surface && widget->type & MINEGUI_TEXT_DISPLAY)
+				minegui_draw_text(root, widget);
+			
+			else if(!widget->text.font_surface)
+				fprintf(stderr, "MineSDL: font_surface from sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
+
         }
 
     }
+
+	SDL_Flip(root->screen);
 
     return 0;
 }

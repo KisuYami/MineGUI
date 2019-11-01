@@ -40,9 +40,7 @@ struct minegui_box
 struct minegui_text
 {
     char	*text;
-    size_t	 font_size;
 
-    int		     font_style;
     TTF_Font	*font_familly;
     SDL_Rect	 font_rect;
     SDL_Color	 font_color;
@@ -83,6 +81,9 @@ struct minegui_root
     SDL_Rect	 size;
 
     int number_widget;
+    int number_font;
+
+	TTF_Font **font_list;
 
     struct minegui_widget widget;
     struct minegui_widget_list **widget_list;
@@ -91,5 +92,6 @@ struct minegui_root
 // Some typedefs for who will use the API
 typedef struct minegui_root MineGUI_root;
 typedef struct minegui_widget MineGUI_widget;
+typedef struct minegui_widget MineGUI_text;
 
 #endif /* WIDGET_H */

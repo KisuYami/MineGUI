@@ -22,6 +22,7 @@ display_clean(struct minegui_root *root);
 void
 display_eval(struct minegui_root *root);
 
+// Handle numpad
 void
 display_handler(struct minegui_root *root)
 {
@@ -34,7 +35,10 @@ display_handler(struct minegui_root *root)
 	}
 
 	if(STRING_INDEX < 13)
-		DISPLAY_STRING[STRING_INDEX++] = number_list[i];
+	{
+		DISPLAY_STRING[STRING_INDEX++] = symbol_list[i];
+		DISPLAY_STRING[STRING_INDEX] = '\0';
+	}
 
 	else 
 		return;
@@ -49,25 +53,31 @@ display_handler(struct minegui_root *root)
 	return;
 }
 
+// Handle symbol pad
 void
 display_symbol(struct minegui_root *root)
 {
 	int i;
-	for(i = 0; i < 7; ++i) {
-
-		if (root->widget_list[2]->widget_sub[i]->clicked == 1)
+	for(i = 0; i < 7; ++i)
+	{
+		if(root->widget_list[2]->widget_sub[i]->clicked == 1)
 			break;
 	}
 
-	if(5 == i) {
+	if(5 == i)
+	{
 		DISPLAY_STRING[--STRING_INDEX] = '\0';
 		if(STRING_INDEX < 0)
 			STRING_INDEX = 0;
 	}
-	else {
-		
+
+	else
+	{
 		if(STRING_INDEX < 13)
+		{
 			DISPLAY_STRING[STRING_INDEX++] = symbol_list[i];
+			DISPLAY_STRING[STRING_INDEX] = '\0';
+		}
 
 		else 
 			return;
@@ -132,7 +142,7 @@ main(void)
 
 	Uint16 background, foreground, button, button_border;
 
-	root = minegui_create_root(256, 256, 16, 0, 3);
+	root = minegui_create_root(256, 256, 16, 0, 3, 1);
 
 	background	  = minegui_create_color(root->screen->format, 30, 30, 30);
 	foreground	  = minegui_create_color(root->screen->format, 50, 50, 50);
@@ -140,6 +150,8 @@ main(void)
 	button_border = minegui_create_color(root->screen->format, 10, 10, 10);
 
 	root->widget.box.color = background;
+
+	root->font_list[0] = minegui_create_font("/usr/share/fonts/truetype/Roboto-Regular.ttf", 30, 0);
 
 	/* START: Number Display */
 
@@ -149,10 +161,8 @@ main(void)
 	minegui_create_widget(root->widget_list[0], 0, 35, 0, 0, 13, 2,
 						  MINEGUI_TEXT_DISPLAY, foreground, foreground);
 
-	minegui_create_text(root->widget_list[0]->widget_sub[0],
-						1, 2, 25, 45, 30, 0,
-						"0.00", "/usr/share/fonts/truetype/Hack-Regular.ttf",
-						255, 255, 255);
+	minegui_create_text(root->font_list[0], root->widget_list[0]->widget_sub[0],
+						1, 2, 25, 45, "0.00", 255, 255, 255);
 
 	/* END: Number Display */
 
@@ -170,10 +180,8 @@ main(void)
 							  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
 							  button, button_border);
 
-		minegui_create_text(root->widget_list[1]->widget_sub[i],
-							1, 9, 25, 45, 30, 0,
-							&number, "/usr/share/fonts/truetype/Hack-Regular.ttf",
-							255, 255, 255);
+		minegui_create_text(root->font_list[0], root->widget_list[1]->widget_sub[i],
+							1, 9, 25, 45, &number, 255, 255, 255);
 
 		minegui_bind_action(root->widget_list[1]->widget_sub[i], 0, display_handler);
 		w += 40;
@@ -207,14 +215,12 @@ main(void)
 		else
 		{
 			minegui_create_widget(root->widget_list[2], 0, 35, 0, 43, p, w,
-								  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_TEXT_DISPLAY,
+								  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
 								  button, button_border);
 		}
 
-		minegui_create_text(root->widget_list[2]->widget_sub[i],
-							1, 12, 25, 45, 30, 0,
-							&number, "/usr/share/fonts/truetype/Hack-Regular.ttf",
-							255, 255, 255);
+		minegui_create_text(root->font_list[0], root->widget_list[2]->widget_sub[i],
+							1, 12, 25, 45, &number, 255, 255, 255);
 		
 		minegui_bind_action(root->widget_list[2]->widget_sub[i], 0, display_symbol);
 

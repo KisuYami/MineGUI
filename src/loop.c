@@ -1,5 +1,5 @@
-#include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
+#include <SDL/SDL.h>
 
 #include "interaction.h"
 #include "widget.h"
@@ -11,9 +11,6 @@ void
 minegui_loop(struct minegui_root *root)
 {
     SDL_Event event;
-
-    atexit(SDL_Quit);
-    atexit(TTF_Quit);
 
     if(TTF_Init()==-1)
     {
@@ -32,15 +29,20 @@ minegui_loop(struct minegui_root *root)
             break;
 
         case SDL_QUIT:
+
+			SDL_QuitSubSystem(SDL_INIT_VIDEO);
+
+			TTF_Quit();
+			SDL_Quit();
+
             minegui_clean_root(root);
-            TTF_Quit();
+
             exit(0);
-            break;
         }
 
-	if(root->redraw_flag == 1) {
-	    minegui_draw_window(root);
-	    root->redraw_flag = 0;
-	}
+		if(root->redraw_flag == 1) {
+			minegui_draw_window(root);
+			root->redraw_flag = 0;
+		}
     }
 }

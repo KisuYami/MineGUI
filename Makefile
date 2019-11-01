@@ -12,7 +12,7 @@ HEADERS = $(shell find $(SRC_DIRS) -name *.h -or -name *.hh)
 OBJS = $(SRCS:%=$(BUILD_DIR)/%.o)
 
 INCLUDE_DIR=/usr/local/include/minegui/
-LIB_DIR=/usr/lib/
+LIB_DIR=/usr/lib64/
 
 # Program binary
 $(BUILD_DIR)/$(TARGET_LIB): $(OBJS)
