@@ -9,7 +9,6 @@
 and in the APIs that made this world work, he found himself lost, as 
 no API had good docs. Then himself started to wrote the magic scrolls himself,
 hopping that he never will need to learn another GUI.
-
 ** Install
  + Dependencies
     1. SDL 1.2
@@ -28,9 +27,37 @@ gcc -lSDL -lSDL_ttf -lminegui example.c -o example
 #+END_SRC
 
 * Usage
-
 ** Concepts
 How i think my API work.
+#+BEGIN_SRC ditaa :file sample.png
+  +-------------------------------+
+  | +---------------------------+ |
+  | |                           | |
+  | |                           | |
+  | |                           | |
+  | +---------------------------+ |
+  | +---------------+ +---------+ +-----> Widget Root (struct minegui_root)
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | | | |  | |  | | | | | | | | +------->Widget List (struct minegui_widget_list)
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | |               | |         | |
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | | | |  | |  | | | | | | | +---------> Widget (struct minegui_widget)
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | |               | |         | |
+  | | +-+  +-+  +-+ | | +-+ +-- | |
+  | | | |  | |  | | | | | | |----------->Widget Text (struct minegui_text)
+  | | +-+  +-+  +-+ | | +-+ +-- | |
+  | |               | |         | |
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | | | |  | |  | | | | | | | | | |
+  | | +-+  +-+  +-+ | | +-+ +-+ | |
+  | +---------------+ +---------+ |	
+  +-------------------------------+
+#+END_SRC
+
+#+RESULTS:
+[[file:sample.png]]
 
 *** Root Window
 The root window is where all widgets are drawed, and it's struct shall

@@ -1,6 +1,6 @@
 #include <SDL/SDL.h>
 #include <minegui/minegui.h>
-#include <time.h>
+#include <stdio.h>
 
 // -*- compile-command: "gcc -Wall -lSDL -lSDL_ttf -lminegui -o test.c test" -*-
 
@@ -36,11 +36,11 @@ display_handler(struct minegui_root *root)
 
 	if(STRING_INDEX < 13)
 	{
-		DISPLAY_STRING[STRING_INDEX++] = symbol_list[i];
+		DISPLAY_STRING[STRING_INDEX++] = number_list[i];
 		DISPLAY_STRING[STRING_INDEX] = '\0';
 	}
 
-	else 
+	else
 		return;
 
 	minegui_change_text(root->widget_list[0]->widget_sub[0], DISPLAY_STRING);
@@ -79,7 +79,7 @@ display_symbol(struct minegui_root *root)
 			DISPLAY_STRING[STRING_INDEX] = '\0';
 		}
 
-		else 
+		else
 			return;
 	}
 
@@ -121,7 +121,7 @@ display_eval(struct minegui_root *root)
 void
 display_clean(struct minegui_root *root)
 {
-	
+
 	STRING_INDEX = 0;
 	memset(DISPLAY_STRING, 0, 19);
 
@@ -151,24 +151,24 @@ main(void)
 
 	root->widget.box.color = background;
 
-	root->font_list[0] = minegui_create_font("/usr/share/fonts/truetype/Roboto-Regular.ttf", 30, 0);
+	root->font_list[0] = minegui_create_font("/usr/share/fonts/TTF/Roboto-Regular.ttf", 30, 0);
 
 	/* START: Number Display */
 
 	root->widget_list[0] = minegui_create_widget_list(10, 70, 10, 246,
-													  1, foreground);
+                                                      1, foreground);
 
 	minegui_create_widget(root->widget_list[0], 0, 35, 0, 0, 13, 2,
-						  MINEGUI_TEXT_DISPLAY, foreground, foreground);
+                          MINEGUI_TEXT_DISPLAY, foreground, foreground);
 
 	minegui_create_text(root->font_list[0], root->widget_list[0]->widget_sub[0],
-						1, 2, 25, 45, "0.00", 255, 255, 255);
+                        1, 2, 25, 45, "0.00", 255, 255, 255);
 
 	/* END: Number Display */
 
 	/* START: Number Pad */
 	root->widget_list[1] = minegui_create_widget_list(80, 246, 10, 135,
-													  12, foreground);
+							  12, foreground);
 
 	int p = 5, w = 5;
 
@@ -177,11 +177,11 @@ main(void)
 		sprintf(&number, "%c", number_list[i]);
 
 		minegui_create_widget(root->widget_list[1], 0, 35, 0, 35, p, w,
-							  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
-							  button, button_border);
+					  MINEGUI_BUTTON | MINEGUI_BORDER | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
+					  button, button_border);
 
 		minegui_create_text(root->font_list[0], root->widget_list[1]->widget_sub[i],
-							1, 9, 25, 45, &number, 255, 255, 255);
+							-1, 9, 25, 45, &number, 255, 255, 255);
 
 		minegui_bind_action(root->widget_list[1]->widget_sub[i], 0, display_handler);
 		w += 40;
@@ -197,7 +197,7 @@ main(void)
 
 	/* START: Math Symbols */
 	root->widget_list[2] = minegui_create_widget_list(80, 246, 145, 247,
-													  8, foreground);
+							  8, foreground);
 
 	p = 5;
 	w = 5;
@@ -209,19 +209,19 @@ main(void)
 		if(i % 2)
 		{
 			minegui_create_widget(root->widget_list[2], 0, 35, 0, 43, p, 54,
-								  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
-								  button, button_border);
+						  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
+						  button, button_border);
 		}
 		else
 		{
 			minegui_create_widget(root->widget_list[2], 0, 35, 0, 43, p, w,
-								  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
-								  button, button_border);
+						  MINEGUI_BUTTON | MINEGUI_RADIUS | MINEGUI_TEXT_DISPLAY,
+						  button, button_border);
 		}
 
 		minegui_create_text(root->font_list[0], root->widget_list[2]->widget_sub[i],
-							1, 12, 25, 45, &number, 255, 255, 255);
-		
+                            1, 12, 25, 45, &number, 255, 255, 255);
+
 		minegui_bind_action(root->widget_list[2]->widget_sub[i], 0, display_symbol);
 
 		if(i == 1 || i == 3 || i == 5) {

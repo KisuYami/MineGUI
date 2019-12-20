@@ -3,6 +3,7 @@
 
 #include "widget.h"
 
+/* Main render and interaction loop */
 void
 minegui_loop(struct minegui_root *root);
 

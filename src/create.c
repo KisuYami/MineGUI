@@ -1,4 +1,5 @@
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -10,18 +11,16 @@ minegui_create_root(int v_size, int h_size,
 					int mode, int fullscreen,
 					int size, int font_number)
 {
-    struct minegui_root *root = NULL;
-    root = malloc(sizeof(struct minegui_root));
+    MineGUI_root *root = malloc(sizeof(struct minegui_root));
 
     if(!root)
     {
-        fprintf(stderr, "MineSDL: Failed to allocate memory for root window\n");
+        error("create", "Failed to allocate memory for root window\n");
         exit(1);
     }
 
     *root = (struct minegui_root)
     {
-
         .screen = NULL,
 
         .fullscreen = fullscreen,
@@ -43,39 +42,15 @@ minegui_create_root(int v_size, int h_size,
 
         .widget = (struct minegui_widget)
         {
-
             .type = MINEGUI_DISPLAY,
-
-            .margin = (struct margin)
-            {
-                .left = 0,
-                .top = 0,
-            },
-
-            .box = (struct minegui_box)
-            {
-
-                .margin = (struct margin)
-                {
-
-                    .top = 0,
-                    .left = 0,
-
-                },
-
-                .size = (struct size)
-                {
-
-                    .x1 = 0,
-                    .x2 = v_size,
-                    .y1 = 0,
-                    .y2 = h_size,
-
-                },
-            },
-
         },
 
+    };
+
+    root->widget.box.size = (struct size)
+    {
+        .x2 = v_size,
+        .y2 = h_size,
     };
 
     if(size > 0)
@@ -86,7 +61,7 @@ minegui_create_root(int v_size, int h_size,
 
     if(SDL_Init(SDL_INIT_VIDEO) != 0)
     {
-        fprintf(stderr, "MineGUI: Failed to create root window\n");
+        error("create", "Failed to create root window\n");
         free(root);
         exit(1);
     }
@@ -96,14 +71,15 @@ minegui_create_root(int v_size, int h_size,
 
     if(!root->screen)
     {
-        fprintf(stderr, "MineGUI: Failed to create root window\n");
+        error("create", "Failed to create root window\n");
         free(root);
         exit(1);
     }
 
 	if(!root->font_list)
 	{
-		fprintf(stderr, "MineGUI: Failed to alocate memory for font_list");
+		error("create", "Failed to allocate memory for font_list");
+        free(root);
 		exit(1);
 	}
 
@@ -142,40 +118,32 @@ minegui_create_widget(struct minegui_widget_list *widget_list,
 
     if(!widget)
     {
-        fprintf(stderr, "MineSDL: Failed to allocate memory for widget\n");
+        error("create", "Failed to allocate memory for widget\n");
         exit(1);
     }
 
     *widget = (struct minegui_widget)
     {
-
         .type = type,
 
         .box = (struct minegui_box)
         {
-
             .color = color,
             .color_border = color_border,
 
             .margin = (struct margin)
             {
-
                 .top = final_margin_top,
                 .left = final_margin_left,
-
             },
             .size = (struct size)
             {
-
                 .x1 = x1,
                 .x2 = x2,
                 .y1 = y1,
                 .y2 = y2,
-
             },
-
         },
-
     };
 
     return widget;
@@ -192,8 +160,7 @@ minegui_create_widget_list(int x1, int x2,
 
     if(!list)
     {
-
-        fprintf(stderr, "MineSDL: Failed to allocate memory for widget list\n");
+        error("create", "Failed to allocate memory for widget list");
         exit(1);
 
     }
@@ -232,14 +199,14 @@ minegui_create_font(char *font_name, int font_size, int font_style)
 {
 	if(!TTF_WasInit() && TTF_Init() == -1)
 	{
-		printf("MineGUI: %s\n", TTF_GetError());
+        error("create", TTF_GetError());
 		return NULL;
 	}
 
     TTF_Font *font_familly = TTF_OpenFont(font_name, font_size);
 
     if(!font_familly)
-        fprintf(stderr, "MineGUI: %s\n", TTF_GetError());
+        error("create", TTF_GetError());
 
     if(font_style != 0)
         TTF_SetFontStyle(font_familly, font_style);
@@ -249,11 +216,6 @@ minegui_create_font(char *font_name, int font_size, int font_style)
 	return font_familly;
 }
 
-
-/* If you want to use this to change a already 
-   created text_surface, free the surface and 
-   the text struct */
-
 void
 minegui_create_text(TTF_Font *font, MineGUI_widget *widget,
 					int x, int y, int v_size, int h_size,
@@ -261,7 +223,7 @@ minegui_create_text(TTF_Font *font, MineGUI_widget *widget,
 {
 	if(!TTF_WasInit() && TTF_Init() == -1)
 	{
-		printf("MineGUI: %s\n", TTF_GetError());
+        error("create", TTF_GetError());
 		return;
 	}
 
@@ -293,7 +255,7 @@ minegui_create_text(TTF_Font *font, MineGUI_widget *widget,
 
 	if(!font)
 	{
-		printf("MineGUI: font wanst opened\n");
+        error("create", "font wasn't opened");
 		return;
 	}
 
@@ -301,7 +263,7 @@ minegui_create_text(TTF_Font *font, MineGUI_widget *widget,
 													 text, final_text.font_color);
 
     if(!final_text.font_surface)
-        fprintf(stderr, "MineGUI: %s\n", TTF_GetError());
+        error("create", TTF_GetError());
 
     widget->text = final_text;
 }
@@ -309,27 +271,24 @@ minegui_create_text(TTF_Font *font, MineGUI_widget *widget,
 void
 minegui_change_text(struct minegui_widget *widget, char *new_text)
 {
-
-	SDL_Surface *text_surface = NULL;
-
 	if(!TTF_WasInit() && TTF_Init() == -1)
 	{
-		fprintf(stderr, "MineGUI: %s\n", TTF_GetError());
+        error("create", TTF_GetError());
 		return;
 	}
 
 	if(!widget->text.font_familly)
 	{
-		fprintf(stderr, "MineGUI: widget->text.font_familly was not initialized\n");
+        error("create", "widget->text.font_familly wasn't initialized");
 		return;
 	}
 
-	text_surface = TTF_RenderText_Blended(widget->text.font_familly,
-							   new_text, widget->text.font_color);
+	SDL_Surface *text_surface = TTF_RenderText_Blended(widget->text.font_familly,
+                                                       new_text, widget->text.font_color);
 
 	if(!text_surface)
 	{
-		fprintf(stderr, "MineGUI: failed to change text: %s", TTF_GetError());
+        error("create", TTF_GetError());
 		return;
 	}
 

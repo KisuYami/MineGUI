@@ -31,8 +31,8 @@ install: $(BUILD_DIR)/$(TARGET_LIB)
 
 	mkdir -p $(DEST_DIR)$(INCLUDE_DIR)
 
-	cp build/$(TARGET_LIB) $(DEST_DIR)/$(LIB_DIR)
-	find $(SRC_DIRS)/*.h -type f -exec install -Dm 755 "{}" "$(DEST_DIR)/$(INCLUDE_DIR)" \;
+	install -Dm 755 build/$(TARGET_LIB) $(LIB_DIR)
+	install -Dm 755 $(HEADERS) "$(DEST_DIR)/$(INCLUDE_DIR)"
 
 clean:
 	$(RM) -rf $(BUILD_DIR)

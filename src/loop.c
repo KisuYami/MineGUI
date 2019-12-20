@@ -14,8 +14,8 @@ minegui_loop(struct minegui_root *root)
 
     if(TTF_Init()==-1)
     {
-        printf("TTF_Init: %s\n", TTF_GetError());
-        exit(2);
+        error("loop", TTF_GetError());
+        exit(-1);
     }
 
     minegui_draw_window(root);

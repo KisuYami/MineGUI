@@ -6,6 +6,12 @@
 
 #include <stddef.h>
 
+/* Print a debug message with the function, 
+file and line from where it's used */
+#define error(from, message)                                        \
+    fprintf(stderr, "minegui_%s: <%s> <%s:%d>: %s\n",               \
+            from, __func__, __FILE__, __LINE__, message);           \
+
 enum box_types
 {
     MINEGUI_DISPLAY		    = 0,
@@ -28,6 +34,7 @@ struct margin
     int left;
 };
 
+/* Information about how a widget should be rendered */
 struct minegui_box
 {
     Uint16 color;
@@ -37,6 +44,7 @@ struct minegui_box
     struct margin margin;
 };
 
+/* Information about how a widget text should be rendered */
 struct minegui_text
 {
     char	*text;
@@ -48,7 +56,7 @@ struct minegui_text
     SDL_Surface *font_surface;
 };
 
-// TODO: add borders
+/* Contain information about a widget */
 struct minegui_widget
 {
     int type;
@@ -70,9 +78,11 @@ struct minegui_widget_list
     struct minegui_widget **widget_sub;
 };
 
+/* The main APP window shall keep information about the window size,
+ mode, the fonts used and the widgets presents in the APP */
 struct minegui_root
 {
-    int volatile redraw_flag;
+    int redraw_flag;
 
     int fullscreen;
     int mode;
@@ -89,9 +99,7 @@ struct minegui_root
     struct minegui_widget_list **widget_list;
 };
 
-// Some typedefs for who will use the API
 typedef struct minegui_root MineGUI_root;
 typedef struct minegui_widget MineGUI_widget;
-typedef struct minegui_widget MineGUI_text;
 
 #endif /* WIDGET_H */

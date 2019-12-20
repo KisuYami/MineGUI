@@ -9,10 +9,6 @@
 
 #define BORDER_SIZE 1
 #define BORDER_RADIUS 1
-/*********************************************************/
-/* When any of the functions below is mannually called,  */
-/*   YOU need to flip the scren(SDL_Flip(root->screen)); */
-/*********************************************************/
 
 int
 minegui_draw_widget(struct minegui_root *root,
@@ -103,7 +99,7 @@ minegui_draw_window(struct minegui_root *root)
     int i, p; 
 	if(!root)
 	{
-        fprintf(stderr, "MineSDL: root window is uninitialized\n");
+        error("draw", "root is uninitialized");
 		return 1;
 	}
 	else
@@ -112,7 +108,7 @@ minegui_draw_window(struct minegui_root *root)
 
     if(!root->widget_list)
     {
-        fprintf(stderr, "MineSDL: Widget_list in root window is uninitialized\n");
+        error("draw", "root->widget_list is uninitialized");
 		return 1;
     }
 
@@ -123,7 +119,11 @@ minegui_draw_window(struct minegui_root *root)
             minegui_draw_widget(root, root->widget_list[i]->widget);
 
         else
-            fprintf(stderr, "MineSDL: Widget in widget_list[%d] is uninitialized\n", i);
+        {
+            char buf[1024];
+            sprintf(buf, "root->widget_list[%d]->widget is uninitialized", i);
+            error("draw", buf);
+        }
 
         for (p = 0; p < root->widget_list[i]->number_widget; ++p)
         {
@@ -135,14 +135,22 @@ minegui_draw_window(struct minegui_root *root)
                 minegui_draw_widget(root, widget);
 
             else
-                fprintf(stderr, "MineSDL: sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
+            {
+                char buf[1024];
+                sprintf(buf, "root->widget_list[%d]->widget_sub[%d]->widget is uninitialized", i, p);
+                error("draw", buf);
+            }
 
 			/* Text on widget */
 			if(widget->text.font_surface && widget->type & MINEGUI_TEXT_DISPLAY)
 				minegui_draw_text(root, widget);
 			
 			else if(!widget->text.font_surface)
-				fprintf(stderr, "MineSDL: font_surface from sub_widget[%d] in widget_list[%d] is uninitialized\n", p, i);
+            {
+                char buf[1024];
+                sprintf(buf, "root->widget_list[%d]->widget_sub[%d]->widget->text.font_surface is uninitialized", i, p);
+                error("draw", buf);
+            }
 
         }
 
